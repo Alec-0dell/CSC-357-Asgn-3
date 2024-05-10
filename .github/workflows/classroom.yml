@@ -1,0 +1,60 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Autograder Script / 357
+      id: autograder-script-357
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Autograder Script / 357
+        setup-command: wget -q --no-cache https://raw.githubusercontent.com/amigler/357-s24/main/autograder/a2/ag.sh
+        command: bash ag.sh
+        timeout: 10
+        max-score: 12
+    - name: Size Command Line Argument
+      id: size-command-line-argument
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Size Command Line Argument
+        setup-command: ''
+        command: bash ag.sh arg_s
+        timeout: 10
+        max-score: 3
+    - name: All Files Command Line Argument
+      id: all-files-command-line-argument
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: All Files Command Line Argument
+        setup-command: ''
+        command: bash ag.sh arg_a
+        timeout: 10
+        max-score: 3
+    - name: Valgrind
+      id: valgrind
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Valgrind
+        setup-command: ''
+        command: bash ag.sh valgrind
+        timeout: 10
+        max-score: 2
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        AUTOGRADER-SCRIPT-357_RESULTS: "${{steps.autograder-script-357.outputs.result}}"
+        SIZE-COMMAND-LINE-ARGUMENT_RESULTS: "${{steps.size-command-line-argument.outputs.result}}"
+        ALL-FILES-COMMAND-LINE-ARGUMENT_RESULTS: "${{steps.all-files-command-line-argument.outputs.result}}"
+        VALGRIND_RESULTS: "${{steps.valgrind.outputs.result}}"
+      with:
+        runners: autograder-script-357,size-command-line-argument,all-files-command-line-argument,valgrind
