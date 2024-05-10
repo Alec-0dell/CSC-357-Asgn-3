@@ -18,7 +18,7 @@ jobs:
       uses: classroom-resources/autograding-command-grader@v1
       with:
         test-name: Autograder Script / 357
-        setup-command: wget -q --no-cache https://raw.githubusercontent.com/amigler/357-s24/main/autograder/a2/ag.sh
+        setup-command: wget -q --no-cache https://raw.githubusercontent.com/amigler/357-s24/main/autograder/a3/ag.sh
         command: bash ag.sh
         timeout: 10
         max-score: 12
@@ -27,7 +27,7 @@ jobs:
       uses: classroom-resources/autograding-command-grader@v1
       with:
         test-name: Size Command Line Argument
-        setup-command: ''
+        setup-command: wget -q --no-cache https://raw.githubusercontent.com/amigler/357-s24/main/autograder/a3/ag.sh
         command: bash ag.sh arg_s
         timeout: 10
         max-score: 3
@@ -36,7 +36,7 @@ jobs:
       uses: classroom-resources/autograding-command-grader@v1
       with:
         test-name: All Files Command Line Argument
-        setup-command: ''
+        setup-command: wget -q --no-cache https://raw.githubusercontent.com/amigler/357-s24/main/autograder/a3/ag.sh
         command: bash ag.sh arg_a
         timeout: 10
         max-score: 3
@@ -45,7 +45,7 @@ jobs:
       uses: classroom-resources/autograding-command-grader@v1
       with:
         test-name: Valgrind
-        setup-command: ''
+        setup-command: wget -q --no-cache https://raw.githubusercontent.com/amigler/357-s24/main/autograder/a3/ag.sh
         command: bash ag.sh valgrind
         timeout: 10
         max-score: 2
