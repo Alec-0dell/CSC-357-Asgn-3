@@ -12,7 +12,7 @@ void tree(char const *path, int depth, int a, int s)
 
     while ((direntp = readdir(dp)) != NULL)
     {
-        if ((strcmp(direntp->d_name, "..") == 0) || (!a && (strcmp(direntp->d_name, ".") == 0)))
+        if ((strcmp(direntp->d_name, "..") == 0) || (strcmp(direntp->d_name, ".") == 0) || (*direntp->d_name == '.' && !a))
         {
             continue;
         }
@@ -26,16 +26,14 @@ void tree(char const *path, int depth, int a, int s)
 
         if (direntp->d_type == DT_DIR)
         {
-            printf("%lu\n", sizeof(char) * (strlen(path) + strlen(direntp->d_name) + 2));
             char *newpath = (char *)malloc(sizeof(char) * (strlen(path) + strlen(direntp->d_name) + 2));
             sprintf(newpath, "%s/%s", path, direntp->d_name);
-            printf("%s", direntp->d_name);
             tree(newpath, depth + 1, a, s);
             free(newpath);
-            continue;
         }
-        closedir(dp);
     }
+    
+    closedir(dp); // Close the directory outside the loop
 }
 
 int main(int argc, char const *argv[])
