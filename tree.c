@@ -2,27 +2,25 @@
 
 void tree(char const *path, int depth, int spacing, int a, int s)
 {
-    DIR *dp = opendir(path);
-    if (dp == NULL)
+    int n, numdirs;
+    struct dirent **direntlst;
+    numdirs = 0;
+
+    n = scandir(path, &direntlst, NULL, alphasort);
+    if (n == -1)
     {
-        printf("error");
-        return;
+        perror("scandir");
+        exit(EXIT_FAILURE);
     }
-    struct dirent *direntp;
 
-    char* pname;
-
-    direntp = readdir(dp);
-
-    while (direntp != NULL)
+    for (size_t j = 0; j < n; j++)
     {
-        if ((strcmp(direntp->d_name, "..") == 0) || (strcmp(direntp->d_name, ".") == 0) || (*direntp->d_name == '.' && !a))
+        if ((strcmp(direntlst[j]->d_name, "..") == 0) || (strcmp(direntlst[j]->d_name, ".") == 0) || (*direntlst[j]->d_name == '.' && !a))
         {
-            direntp = readdir(dp);
             continue;
         }
-        
-        if (direntp->d_type != DT_DIR)
+
+        if (direntlst[j]->d_type != DT_DIR)
         {
             for (int i = 0; i < spacing; i++)
             {
@@ -32,33 +30,31 @@ void tree(char const *path, int depth, int spacing, int a, int s)
             {
                 printf("|   ");
             }
-            pname = direntp->d_name;
-            if((direntp = readdir(dp)) != NULL){
-                printf("|-- %s\n", pname);
-            } else {
-                printf("`-- %s\n", pname);
+            if (j == (n - 1) && (numdirs != 0))
+            {
+                printf("`-- %s\n", direntlst[j]->d_name);
             }
-            
-        } else{
-            direntp = readdir(dp);
+            else
+            {
+                printf("|-- %s\n", direntlst[j]->d_name);
+            }
         }
-
+        else
+        {
+            numdirs++;
+        }
     }
 
-    rewinddir(dp);
-
-    direntp = readdir(dp);
-
-    while (direntp != NULL)
+    for (size_t m = 0; m < n; m++)
     {
-        if ((strcmp(direntp->d_name, "..") == 0) || (strcmp(direntp->d_name, ".") == 0) || (*direntp->d_name == '.' && !a))
+        if ((strcmp(direntlst[m]->d_name, "..") == 0) || (strcmp(direntlst[m]->d_name, ".") == 0) || (*direntlst[m]->d_name == '.' && !a))
         {
-            direntp = readdir(dp);
             continue;
         }
 
-        if (direntp->d_type == DT_DIR)
+        if (direntlst[m]->d_type == DT_DIR)
         {
+            numdirs--;
             for (int i = 0; i < spacing; i++)
             {
                 printf("    ");
@@ -68,23 +64,23 @@ void tree(char const *path, int depth, int spacing, int a, int s)
                 printf("|   ");
             }
 
-            pname = direntp->d_name;
-            char *newpath = (char *)malloc(sizeof(char) * (strlen(path) + strlen(pname) + 2));
-            sprintf(newpath, "%s/%s", path, pname);
-            if((direntp = readdir(dp)) != NULL){
-                printf("|-- %s\n", pname);
-                tree(newpath, depth + 1, spacing, a, s);
-            } else {
-                printf("`-- %s\n", pname);
+            char *newpath = (char *)malloc(sizeof(char) * (strlen(path) + strlen(direntlst[m]->d_name) + 2));
+            sprintf(newpath, "%s/%s", path, direntlst[m]->d_name);
+            if (m == (n - 1) || (numdirs == 0))
+            {
+                printf("`-- %s\n", direntlst[m]->d_name);
                 tree(newpath, depth + 1, spacing + 1, a, s);
             }
+            else
+            {
+                printf("|-- %s\n", direntlst[m]->d_name);
+                tree(newpath, depth + 1, spacing, a, s);
+            }
             free(newpath);
-        } else{
-            direntp = readdir(dp);
         }
     }
 
-    closedir(dp); // Close the directory outside the loop
+    free(direntlst);
 }
 
 int main(int argc, char const *argv[])
@@ -132,7 +128,7 @@ int main(int argc, char const *argv[])
 
     char *path = realpath(argv[1], NULL);
     printf("%s\n", argv[1]);
-    tree(path, 0,0, a, s);
+    tree(path, 0, 0, a, s);
     printf("\n");
     free(path);
     return EXIT_SUCCESS;
