@@ -16,23 +16,44 @@ void tree(char const *path, int depth, int a, int s)
         {
             continue;
         }
-
-        for (int i = 0; i < depth; i++)
+        
+        if (direntp->d_type != DT_DIR)
         {
-            printf("|   ");
-        }
 
-        printf("|--- %s\n", direntp->d_name);
+            for (int i = 0; i < depth; i++)
+            {
+                printf("|   ");
+            }
+
+            printf("|--- %s\n", direntp->d_name);
+        }
+    }
+
+    rewinddir(dp);
+
+    while ((direntp = readdir(dp)) != NULL)
+    {
+        if ((strcmp(direntp->d_name, "..") == 0) || (strcmp(direntp->d_name, ".") == 0) || (*direntp->d_name == '.' && !a))
+        {
+            continue;
+        }
 
         if (direntp->d_type == DT_DIR)
         {
+
+            for (int i = 0; i < depth; i++)
+            {
+                printf("|   ");
+            }
+
+            printf("|--- %s\n", direntp->d_name);
             char *newpath = (char *)malloc(sizeof(char) * (strlen(path) + strlen(direntp->d_name) + 2));
             sprintf(newpath, "%s/%s", path, direntp->d_name);
             tree(newpath, depth + 1, a, s);
             free(newpath);
         }
     }
-    
+
     closedir(dp); // Close the directory outside the loop
 }
 
