@@ -1,6 +1,6 @@
 #include "tree.h"
 
-void tree(char const *path, int depth, int spacing, int a, int s)
+void tree(char const *path, int depth, int *spacing, int a, int s)
 {
     int n, numdirs;
     struct dirent **direntlst;
@@ -22,15 +22,16 @@ void tree(char const *path, int depth, int spacing, int a, int s)
 
         if (direntlst[j]->d_type != DT_DIR)
         {
-            for (int i = 0; i < spacing; i++)
+            for (int i = 0; i < depth; i++)
             {
-                printf("    ");
-            }
-            for (int i = 0; i < (depth - spacing); i++)
-            {
-                printf("|   ");
-            }
-            if (j == (n - 1) && (numdirs != 0))
+                if(TestBit(spacing, i)){
+                    printf("    ");
+                } else {
+                    printf("|   ");
+                }
+                
+            } 
+            if (j == (n - 1) && (numdirs == 0))
             {
                 printf("`-- %s\n", direntlst[j]->d_name);
             }
@@ -55,21 +56,23 @@ void tree(char const *path, int depth, int spacing, int a, int s)
         if (direntlst[m]->d_type == DT_DIR)
         {
             numdirs--;
-            for (int i = 0; i < spacing; i++)
+            for (int i = 0; i < depth; i++)
             {
-                printf("    ");
-            }
-            for (int i = 0; i < (depth - spacing); i++)
-            {
-                printf("|   ");
-            }
+                if(TestBit(spacing, i)){
+                    printf("    ");
+                } else {
+                    printf("|   ");
+                }
+                
+            } 
 
             char *newpath = (char *)malloc(sizeof(char) * (strlen(path) + strlen(direntlst[m]->d_name) + 2));
             sprintf(newpath, "%s/%s", path, direntlst[m]->d_name);
             if (m == (n - 1) || (numdirs == 0))
             {
                 printf("`-- %s\n", direntlst[m]->d_name);
-                tree(newpath, depth + 1, spacing + 1, a, s);
+                SetBit(spacing, depth);
+                tree(newpath, depth + 1, spacing, a, s);
             }
             else
             {
@@ -128,8 +131,16 @@ int main(int argc, char const *argv[])
 
     char *path = realpath(argv[1], NULL);
     printf("%s\n", argv[1]);
-    tree(path, 0, 0, a, s);
+
+    int A[10]; //bit array
+    int i;
+    for (i = 0; i < 10; i++)
+        A[i] = 0; // Clear the bit array
+
+    tree(path, 0, A, a, s);
+
     printf("\n");
     free(path);
-    return EXIT_SUCCESS;
+
+
 }
