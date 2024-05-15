@@ -1,11 +1,4 @@
 #include "tree.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h> 
-#include <string.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <sys/stat.h>
 
 
 void tree(char const *path, int depth, int *spacing, int a, int s)
@@ -91,6 +84,9 @@ void tree(char const *path, int depth, int *spacing, int a, int s)
         }
     }
 
+    for (size_t i = 0; i < n; i++) {
+        free(direntlst[i]);
+    }
     free(direntlst);
 }
 
