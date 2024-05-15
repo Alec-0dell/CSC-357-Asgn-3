@@ -1,1 +1,1 @@
-Your Name Here, email@calpoly.edu
+Your Name Here, aqodell@calpoly.edu
