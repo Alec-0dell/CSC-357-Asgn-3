@@ -42,6 +42,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 if (j == (n - 1))
                 {
                     printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
+                    ClearBit(spacing, depth - 1);
                 }
                 else
                 {
@@ -55,6 +56,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 if (j == (n - 1))
                 {
                     printf("`-- %s\n", direntlst[j]->d_name);
+                    ClearBit(spacing, (depth-1));
                 }
                 else
                 {
