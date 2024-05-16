@@ -41,11 +41,11 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 stat(newpath, file_status);
                 if (j == (n - 1))
                 {
-                    printf("`-- [% 11ld]%s\n", file_status->st_size, direntlst[j]->d_name);
+                    printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
                 }
                 else
                 {
-                    printf("|-- [% 11ld]%s\n", file_status->st_size, direntlst[j]->d_name);
+                    printf("|-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
                 }
                 free(file_status);
                 free(newpath);
@@ -86,13 +86,13 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 stat(newpath, file_status);
                 if (j == (n - 1))
                 {
-                    printf("`-- [% 11ld]%s\n", file_status->st_size, direntlst[j]->d_name);
+                    printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
                     SetBit(spacing, depth);
                     tree(newpath, depth + 1, spacing, a, s, dirs, files);
                 }
                 else
                 {
-                    printf("|-- [% 11ld]%s\n", file_status->st_size, direntlst[j]->d_name);
+                    printf("|-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
                     tree(newpath, depth + 1, spacing, a, s, dirs, files);
                 }
                 free(file_status);
@@ -150,7 +150,7 @@ int main(int argc, char const *argv[])
             {
                 s = 1;
             }
-            else if (strcmp(argv[2], "-a") == 0 && a != 1)
+            else if (strcmp(argv[i], "-a") == 0 && a != 1)
             {
                 a = 1;
             }
@@ -180,7 +180,7 @@ int main(int argc, char const *argv[])
     {
         struct stat *file_status = (struct stat *)malloc(sizeof(struct stat));
         stat(path, file_status);
-        printf("[% 11ld]%s\n", file_status->st_size, argv[pathidx]);
+        printf("[% 11ld]  %s\n", file_status->st_size, argv[pathidx]);
         free(file_status);
     }
     else
