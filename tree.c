@@ -42,7 +42,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 if (j == (n - 1))
                 {
                     printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
-                    ClearBit(spacing, (depth-1));
+                    ClearBit(spacing, (depth - 1));
                 }
                 else
                 {
@@ -56,8 +56,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 if (j == (n - 1))
                 {
                     printf("`-- %s\n", direntlst[j]->d_name);
-                    ClearBit(spacing, (depth-1));
-                    
+                    ClearBit(spacing, (depth - 1));
                 }
                 else
                 {
@@ -91,8 +90,8 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 {
                     printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
                     SetBit(spacing, depth);
-                    ClearBit(spacing, (depth-1));
                     tree(newpath, depth + 1, spacing, a, s, dirs, files);
+                    ClearBit(spacing, (depth - 1));
                 }
                 else
                 {
@@ -105,10 +104,13 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
             {
                 if (j == (n - 1))
                 {
+                    struct stat *file_status = (struct stat *)malloc(sizeof(struct stat));
+                    stat(newpath, file_status);
                     printf("`-- %s\n", direntlst[j]->d_name);
                     SetBit(spacing, depth);
-                    ClearBit(spacing, (depth-1));
                     tree(newpath, depth + 1, spacing, a, s, dirs, files);
+                    ClearBit(spacing, (depth - 1));
+                    free(file_status);
                 }
                 else
                 {
