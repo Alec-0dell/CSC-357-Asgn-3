@@ -14,7 +14,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
 
     for (size_t j = 0; j < n; j++)
     {
-        if ((strcmp(direntlst[j]->d_name, "..") == 0) || (strcmp(direntlst[j]->d_name, ".") == 0) || (*direntlst[j]->d_name == '.' && !a))
+        if ((strcmp(direntlst[j]->d_name, "..") == 0) || (strcmp(direntlst[j]->d_name, ".") == 0) || (*(direntlst[j]->d_name) == '.' && !a))
         {
             continue;
         }
@@ -42,7 +42,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 if (j == (n - 1))
                 {
                     printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
-                    ClearBit(spacing, (depth - 1));
+                    ClearBit(spacing, (depth-1));
                 }
                 else
                 {
@@ -57,6 +57,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 {
                     printf("`-- %s\n", direntlst[j]->d_name);
                     ClearBit(spacing, (depth-1));
+                    
                 }
                 else
                 {
@@ -90,6 +91,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 {
                     printf("`-- [% 11ld]  %s\n", file_status->st_size, direntlst[j]->d_name);
                     SetBit(spacing, depth);
+                    ClearBit(spacing, (depth-1));
                     tree(newpath, depth + 1, spacing, a, s, dirs, files);
                 }
                 else
@@ -105,6 +107,7 @@ void tree(char const *path, int depth, int *spacing, int a, int s, int *dirs, in
                 {
                     printf("`-- %s\n", direntlst[j]->d_name);
                     SetBit(spacing, depth);
+                    ClearBit(spacing, (depth-1));
                     tree(newpath, depth + 1, spacing, a, s, dirs, files);
                 }
                 else
@@ -190,12 +193,12 @@ int main(int argc, char const *argv[])
         printf("%s\n", argv[pathidx]);
     }
 
-    int A[10]; // bit array
+    int B[10]; // bit array
     int i;
     for (i = 0; i < 10; i++)
-        A[i] = 0; // Clear the bit array
+        B[i] = 0; // Clear the bit array
 
-    tree(path, 0, A, a, s, &dirs, &files);
+    tree(path, 0, B, a, s, &dirs, &files);
 
     printf("\n");
     printf("%d directories, %d files\n", dirs, files);
